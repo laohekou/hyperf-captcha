@@ -26,7 +26,7 @@
     },
     "extra": {
         "hyperf": {
-            "config": "Hyperf\\Captcha\\ConfigProvider"
+            "config": "Xyu\\HyperfCaptcha\\ConfigProvider"
         }
     },
     "repositories": {
