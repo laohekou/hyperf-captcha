@@ -15,8 +15,7 @@ namespace Xyu\HyperfCaptcha;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\SessionInterface;
-use Hyperf\HttpMessage\Stream\SwooleStream;
-use Lizhaoyang\Captcha\Handler\CaptchaHandler;
+use Xyu\HyperfCaptcha\Handler\CaptchaHandler;
 
 class Captcha implements CaptchaInterface
 {

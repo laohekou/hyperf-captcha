@@ -172,12 +172,12 @@ class CaptchaHandler
         // 图片高(px)
         $this->imageH || $this->imageH = $this->fontSize * 2.5;
         // 建立一幅 $this->imageW x $this->imageH 的图像
-        $this->im = imagecreate($this->imageW, $this->imageH);
+        $this->im = \imagecreate($this->imageW, $this->imageH);
         // 设置背景
-        imagecolorallocate($this->im, $this->bg[0], $this->bg[1], $this->bg[2]);
+        \imagecolorallocate($this->im, $this->bg[0], $this->bg[1], $this->bg[2]);
 
         // 验证码字体随机颜色
-        $this->color = imagecolorallocate($this->im, mt_rand(1, 150), mt_rand(1, 150), mt_rand(1, 150));
+        $this->color = \imagecolorallocate($this->im, mt_rand(1, 150), mt_rand(1, 150), mt_rand(1, 150));
 
         // 验证码使用随机字体
         $ttfPath = __DIR__ . '/../../assets/' . ($this->useZh ? 'zhttfs' : 'ttfs') . '/';
@@ -218,14 +218,14 @@ class CaptchaHandler
             $y     = $this->fontSize + mt_rand(10, 20);
             $angle = $this->math ? 0 : mt_rand(-40, 40);
 
-            imagettftext($this->im, $this->fontSize, $angle, $x, $y, $this->color, $fontttf, $char);
+            \imagettftext($this->im, $this->fontSize, $angle, $x, $y, $this->color, $fontttf, $char);
         }
 
         ob_start();
         // 输出图像
-        imagepng($this->im);
+        \imagepng($this->im);
         $content = ob_get_clean();
-        imagedestroy($this->im);
+        \imagedestroy($this->im);
 
         return $content;
     }
@@ -261,7 +261,7 @@ class CaptchaHandler
                 $py = $A * sin($w * $px + $f) + $b + $this->imageH / 2; // y = Asin(ωx+φ) + b
                 $i  = (int) ($this->fontSize / 5);
                 while ($i > 0) {
-                    imagesetpixel($this->im, $px + $i, $py + $i, $this->color); // 这里(while)循环画像素点比imagettftext和imagestring用字体大小一次画出（不用这while循环）性能要好很多
+                    \imagesetpixel($this->im, $px + $i, $py + $i, $this->color); // 这里(while)循环画像素点比imagettftext和imagestring用字体大小一次画出（不用这while循环）性能要好很多
                     $i--;
                 }
             }
@@ -281,7 +281,7 @@ class CaptchaHandler
                 $py = $A * sin($w * $px + $f) + $b + $this->imageH / 2; // y = Asin(ωx+φ) + b
                 $i  = (int) ($this->fontSize / 5);
                 while ($i > 0) {
-                    imagesetpixel($this->im, $px + $i, $py + $i, $this->color);
+                    \imagesetpixel($this->im, $px + $i, $py + $i, $this->color);
                     $i--;
                 }
             }
@@ -297,10 +297,10 @@ class CaptchaHandler
         $codeSet = '2345678abcdefhijkmnpqrstuvwxyz';
         for ($i = 0; $i < 10; $i++) {
             //杂点颜色
-            $noiseColor = imagecolorallocate($this->im, mt_rand(150, 225), mt_rand(150, 225), mt_rand(150, 225));
+            $noiseColor = \imagecolorallocate($this->im, mt_rand(150, 225), mt_rand(150, 225), mt_rand(150, 225));
             for ($j = 0; $j < 5; $j++) {
                 // 绘杂点
-                imagestring($this->im, 5, mt_rand(-10, $this->imageW), mt_rand(-10, $this->imageH), $codeSet[mt_rand(0, 29)], $noiseColor);
+                \imagestring($this->im, 5, mt_rand(-10, $this->imageW), mt_rand(-10, $this->imageH), $codeSet[mt_rand(0, 29)], $noiseColor);
             }
         }
     }
