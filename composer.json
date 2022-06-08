@@ -19,7 +19,10 @@
     "autoload": {
         "psr-4": {
             "Xyu\\HyperfCaptcha\\": "src/"
-        }
+        },
+        "files": [
+            "src/Support/helper.php"
+        ]
     },
     "extra": {
         "hyperf": {
