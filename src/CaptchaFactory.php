@@ -5,8 +5,8 @@ namespace Xyu\HyperfCaptcha;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\SessionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class CaptchaFactory
 {
@@ -14,7 +14,7 @@ class CaptchaFactory
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->get(ConfigInterface::class);
-        $session = $container->get(SessionInterface::class);
-        return make(Captcha::class, compact('config', 'session'));
+        $cache = $container->get(CacheInterface::class);
+        return make(Captcha::class, compact('config', 'cache'));
     }
 }

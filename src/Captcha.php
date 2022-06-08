@@ -14,7 +14,7 @@ namespace Xyu\HyperfCaptcha;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\SessionInterface;
+use Psr\SimpleCache\CacheInterface;
 use Xyu\HyperfCaptcha\Handler\CaptchaHandler;
 
 class Captcha implements CaptchaInterface
@@ -30,10 +30,10 @@ class Captcha implements CaptchaInterface
     private $config;
 
 
-    public function __construct(ConfigInterface $config, SessionInterface $session)
+    public function __construct(ConfigInterface $config, CacheInterface $cache)
     {
         $this->config = $config;
-        $this->handler = new CaptchaHandler($this->config, $session);
+        $this->handler = new CaptchaHandler($this->config, $cache);
     }
 
     public function create(): string
@@ -79,6 +79,12 @@ class Captcha implements CaptchaInterface
     public function setLength(int $length = 4): CaptchaInterface
     {
         $this->config->set('captcha.length', $length);
+        return $this;
+    }
+
+    public function expire(int $expire = 600): CaptchaInterface
+    {
+        $this->config->set('captcha.expire', $expire);
         return $this;
     }
 }

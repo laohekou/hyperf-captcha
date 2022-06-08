@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 return [
+    'expire' => 600,
     'fontSize' => env('CAPTCHA_FONTSIZE', 25),
     'useCurve' => env('CAPTCHA_USECURVE', true),
     'useNoise' => env('CAPTCHA_USENOISE', true),

@@ -7,6 +7,7 @@ namespace Xyu\HyperfCaptcha\Handler;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class CaptchaHandler
 {
@@ -19,14 +20,14 @@ class CaptchaHandler
     private $config = null;
 
     /**
-     * @var SessionInterface
+     * @var CacheInterface
      */
-    private $session = null;
+    private $cache = null;
 
     // 验证码字符集合
     protected $codeSet = '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
     // 验证码过期时间（s）
-    protected $expire = 1800;
+    protected $expire = 600;
     // 使用中文验证码
     protected $useZh = false;
     // 中文验证码字符串
@@ -56,12 +57,12 @@ class CaptchaHandler
      * 架构方法 设置参数
      * @access public
      * @param ConfigInterface $config
-     * @param SessionInterface $session
+     * @param CacheInterface $session
      */
-    public function __construct(ConfigInterface $config, SessionInterface $session)
+    public function __construct(ConfigInterface $config, CacheInterface $cache)
     {
         $this->config  = $config;
-        $this->session = $session;
+        $this->cache = $cache;
     }
 
     /**
@@ -86,7 +87,6 @@ class CaptchaHandler
     /**
      * 创建验证码
      * @return array
-     * @throws Exception
      * @throws \Exception
      */
     protected function generate(): array
@@ -118,9 +118,7 @@ class CaptchaHandler
 
         $hash = password_hash($key, PASSWORD_BCRYPT, ['cost' => 5]);
 
-        $this->session->set('captcha', [
-            'key' => $hash,
-        ]);
+        $this->cache->set('captcha', $hash, $this->expire);
 
         return [
             'value' => $bag,
@@ -136,19 +134,15 @@ class CaptchaHandler
      */
     public function check(string $code): bool
     {
-
-        if (!$this->session->has('captcha')) {
-            return false;
-        }
-
-        $key = $this->session->get('captcha.key');
+        $key = $this->cache->get('captcha');
+        if(! $key) return false;
 
         $code = mb_strtolower($code, 'UTF-8');
 
         $res = password_verify($code, $key);
 
         if ($res) {
-            $this->session->remove('captcha');
+            $this->cache->delete('captcha');
         }
         return $res;
     }

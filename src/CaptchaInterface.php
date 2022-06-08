@@ -11,6 +11,8 @@ interface CaptchaInterface
 {
     public function create(): string;
 
+    public function expire(int $expire = 600): CaptchaInterface;
+
     public function setUseCurve(bool $flag = true): CaptchaInterface;
 
     public function setUseNoise(bool $flag = true): CaptchaInterface;
