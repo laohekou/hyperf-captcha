@@ -5,7 +5,6 @@ namespace Xyu\HyperfCaptcha\Handler;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 
@@ -86,10 +85,11 @@ class CaptchaHandler
 
     /**
      * 创建验证码
+     * @param $id 要生成验证码的标识
      * @return array
      * @throws \Exception
      */
-    protected function generate(): array
+    protected function generate(string $id): array
     {
         $bag = '';
 
@@ -118,7 +118,7 @@ class CaptchaHandler
 
         $hash = password_hash($key, PASSWORD_BCRYPT, ['cost' => 5]);
 
-        $this->cache->set('captcha', $hash, $this->expire);
+        $this->cache->set('captcha:'. $id, $hash, $this->expire);
 
         return [
             'value' => $bag,
@@ -148,18 +148,18 @@ class CaptchaHandler
     }
 
     /**
-     * 输出验证码并把验证码的值保存的session中
+     * 输出验证码并把验证码的值保存的cache中
      * @access public
      * @param null|string $config
-     * @param bool $api
+     * @param string $ident 要生成验证码的标识
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function create(string $config = null, bool $api = false): string
+    public function create(string $ident, string $config = null): string
     {
         $this->configure($config);
 
-        $generator = $this->generate();
+        $generator = $this->generate($ident);
 
         // 图片宽(px)
         $this->imageW || $this->imageW = $this->length * $this->fontSize * 1.5 + $this->length * $this->fontSize / 2;
